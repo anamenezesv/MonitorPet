@@ -109,11 +109,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.favorite,
-              size: 100,
-              color: Colors.red,
-            ),
+            const SizedBox(height: 20),
+            HeartRateWidget(heartRate: heartRate),
             const SizedBox(height: 16),
             Text(
               'Batimentos Cardíacos: $heartRate',
@@ -126,6 +123,74 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class HeartRateWidget extends StatefulWidget {
+  final int heartRate;
+
+  const HeartRateWidget({Key? key, required this.heartRate}) : super(key: key);
+
+  @override
+  _HeartRateWidgetState createState() => _HeartRateWidgetState();
+}
+
+class _HeartRateWidgetState extends State<HeartRateWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 1.0, end: 1.4).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _animationController.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _animationController.forward();
+      }
+    });
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _animation.value,
+          child: IconButton(
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+              size: 60,
+            ),
+            onPressed: () {},
+          ),
+        );
+      },
     );
   }
 }

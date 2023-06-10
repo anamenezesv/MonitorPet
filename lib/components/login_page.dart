@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:modelo/components/common/custom_from_button.dart';
 import 'package:modelo/components/common/custom_input_field.dart';
 import 'package:modelo/components/common/page_heading.dart';
@@ -43,6 +44,8 @@ class LoginPageState extends State<LoginPage> {
                           validator: (textValue) {
                             if (textValue == null || textValue.isEmpty) {
                               return 'É obrigatório informar um e-mail!';
+                            } else if (!EmailValidator.validate(textValue)) {
+                              return 'Por favor, insira um e-mail válido!';
                             }
                             return null;
                           },

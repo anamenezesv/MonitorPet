@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomInputField extends StatefulWidget {
   final String labelText;
   final String hintText;
+  final TextEditingController? controller;
   final String? Function(String?) validator;
   final bool suffixIcon;
   final bool? isDense;
@@ -13,9 +14,10 @@ class CustomInputField extends StatefulWidget {
     required this.labelText,
     required this.hintText,
     required this.validator,
+    this.controller,
     this.suffixIcon = false,
     this.isDense,
-    this.obscureText = false
+    this.obscureText = false,
   }) : super(key: key);
 
   @override
@@ -23,7 +25,6 @@ class CustomInputField extends StatefulWidget {
 }
 
 class _CustomInputFieldState extends State<CustomInputField> {
-  //
   bool _obscureText = true;
 
   @override
@@ -36,27 +37,33 @@ class _CustomInputFieldState extends State<CustomInputField> {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(widget.labelText, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+            child: Text(
+              widget.labelText,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
           TextFormField(
+            controller: widget.controller,
             obscureText: (widget.obscureText && _obscureText),
             decoration: InputDecoration(
               isDense: (widget.isDense != null) ? widget.isDense : false,
               hintText: widget.hintText,
-              suffixIcon: widget.suffixIcon ? IconButton(
-                icon: Icon(
-                  _obscureText ? Icons.remove_red_eye : Icons.visibility_off_outlined,
-                  color: Colors.black54,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
-              ): null,
-              suffixIconConstraints: (widget.isDense != null) ? const BoxConstraints(
-                  maxHeight: 33
-              ): null,
+              suffixIcon: widget.suffixIcon
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.remove_red_eye : Icons.visibility_off_outlined,
+                        color: Colors.black54,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : null,
+              suffixIconConstraints: (widget.isDense != null)
+                  ? const BoxConstraints(maxHeight: 33)
+                  : null,
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: widget.validator,
