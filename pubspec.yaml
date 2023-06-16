@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  firebase_core: 2.14.0
+  cloud_firestore: 4.8.1
   flutter:
     sdk: flutter
   syncfusion_flutter_charts: ^20.2.41

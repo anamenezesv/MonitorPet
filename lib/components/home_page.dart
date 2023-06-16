@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modelo/components/register_pet_page.dart';
 import 'login_page.dart';
 
 class HomePage extends StatelessWidget {
-  final int heartRate;
-
-  const HomePage({required this.heartRate});
+  const HomePage();
 
   @override
   Widget build(BuildContext context) {
@@ -110,15 +109,22 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            HeartRateWidget(heartRate: heartRate),
-            const SizedBox(height: 16),
-            Text(
-              'Batimentos Cardíacos: $heartRate',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Batimento')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final documents = snapshot.data!.docs;
+                  final heartRate =
+                      documents.isNotEmpty ? documents.first['Valor'] : 0;
+                  return HeartRateWidget(heartRate: heartRate);
+                } else if (snapshot.hasError) {
+                  return Text('Erro ao obter os batimentos cardíacos');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
             ),
           ],
         ),
@@ -126,7 +132,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
 
 class HeartRateWidget extends StatefulWidget {
   final int heartRate;

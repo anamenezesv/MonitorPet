@@ -147,7 +147,7 @@ class LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomePage(heartRate: 100),
+          builder: (context) => const HomePage(),
         ),
       );
     }

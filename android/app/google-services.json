@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1068095788200",
+    "firebase_url": "https://monitorpet-7f06f-default-rtdb.firebaseio.com",
+    "project_id": "monitorpet-7f06f",
+    "storage_bucket": "monitorpet-7f06f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068095788200:android:6e565655eae2814cedde9d",
+        "android_client_info": {
+          "package_name": "com.example.monitor_pet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068095788200-hes4ntr3cbgav1idl9a8ska5b85h7est.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBheN36pLhcTfXHQWx6SuoFPITZRACD_Yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068095788200-hes4ntr3cbgav1idl9a8ska5b85h7est.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

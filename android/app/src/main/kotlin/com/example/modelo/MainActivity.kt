@@ -1,4 +1,4 @@
-package com.example.modelo
+package com.example.monitor_pet
 
 import io.flutter.embedding.android.FlutterActivity
 
