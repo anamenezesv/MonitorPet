@@ -223,7 +223,7 @@ class _HeartRateWidgetState extends State<HeartRateWidget> with SingleTickerProv
         ),
         const SizedBox(height: 20),
         Text(
-          'Batimento: ${widget.heartRate}',
+          '${widget.heartRate} - SRD',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
