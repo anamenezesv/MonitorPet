@@ -1,10 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:modelo/components/register_pet_page.dart';
 import 'login_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage();
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int heartRate = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    listenToHeartRateChanges();
+  }
+
+  void listenToHeartRateChanges() {
+    DatabaseReference batimentoRef = FirebaseDatabase.instance.ref('Batimento/Valor');
+    batimentoRef.onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        setState(() {
+          heartRate = data as int;
+        });
+      }
+    }, onError: (Object error) {
+      print('Erro ao obter os batimentos cardíacos: $error');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +65,11 @@ class HomePage extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-              onTap: () {
-                // Lógica para navegar para a tela Home
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
               },
             ),
             ListTile(
@@ -109,23 +139,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Batimento')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final documents = snapshot.data!.docs;
-                  final heartRate =
-                      documents.isNotEmpty ? documents.first['Valor'] : 0;
-                  return HeartRateWidget(heartRate: heartRate);
-                } else if (snapshot.hasError) {
-                  return Text('Erro ao obter os batimentos cardíacos');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
+            HeartRateWidget(heartRate: heartRate),
           ],
         ),
       ),
@@ -142,8 +156,7 @@ class HeartRateWidget extends StatefulWidget {
   _HeartRateWidgetState createState() => _HeartRateWidgetState();
 }
 
-class _HeartRateWidgetState extends State<HeartRateWidget>
-    with SingleTickerProviderStateMixin {
+class _HeartRateWidgetState extends State<HeartRateWidget> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -180,22 +193,43 @@ class _HeartRateWidgetState extends State<HeartRateWidget>
   }
 
   @override
+  void didUpdateWidget(HeartRateWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.heartRate != oldWidget.heartRate) {
+      _animationController.reset();
+      _animationController.forward();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _animation.value,
-          child: IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: Colors.red,
-              size: 60,
-            ),
-            onPressed: () {},
+    return Column(
+      children: [
+        AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _animation.value,
+              child: IconButton(
+                icon: Icon(
+                  Icons.favorite,
+                  color: Colors.red,
+                  size: 60,
+                ),
+                onPressed: () {},
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Batimento: ${widget.heartRate}',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
